@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 
-SQLALCHEMY_DATABASE_URL = "postgresql://franzy:fastrack@localhost/CancerCellDetection_db"
+SQLALCHEMY_DATABASE_URL = "postgresql://franzy:fastrack@localhost/cancercelldetection_db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL
