@@ -10,3 +10,4 @@ app = FastAPI()
 models.Base.metadata.create_all(engine)
 
 app.include_router(todo.router)
+app.include_router(authentication.router)

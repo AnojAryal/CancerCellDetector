@@ -1,11 +1,9 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from database import Base
 from sqlalchemy.orm import relationship
-
-
+from database import Base
 
 class User(Base):
-    tablename = "users"
+    __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
@@ -20,12 +18,11 @@ class User(Base):
     login_info = relationship("UserLogin", uselist=False, back_populates="user")
 
 class UserLogin(Base):
-    __tablename = "user_login"
+    __tablename__ = "user_login"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-
 
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="login_info")
