@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from database import engine
-from routers import user
+from routers import user, authentication
 import models as models
+
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"message": "Hello World"}
+# Create database tables if they don't exist
+models.Base.metadata.create_all(engine)
+
+app.include_router(todo.router)
