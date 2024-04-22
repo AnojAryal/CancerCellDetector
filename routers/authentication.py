@@ -22,7 +22,7 @@ def login(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Invalid username"
         )
-    if not Hashing.verify(user.password, authentication.password):
+    if not Hashing.verify(user.hashed_password, authentication.password):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Invalid Password"
         )
