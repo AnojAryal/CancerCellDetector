@@ -13,3 +13,12 @@ engine = create_engine(
 SessionLocal  =sessionmaker(autocommit = False, autoflush = False, bind = engine)
 
 Base = declerative_base()
+
+
+#Dependency to get a database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
