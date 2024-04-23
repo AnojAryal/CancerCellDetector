@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from hashing import Hashing
 import database, models, JWTtoken
-
+from JWTtoken import get_current_user
 
 router = APIRouter(tags=["Authentication"])
 
@@ -31,3 +31,8 @@ def login(
         data={"sub": user.username, "id": user.id}
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/home")
+async def home(current_user: models.User = Depends(get_current_user)):
+    return {"message": f"Hello, {current_user.username}, you are logged in!"}
