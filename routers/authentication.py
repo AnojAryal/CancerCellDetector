@@ -35,4 +35,4 @@ def login(
 
 @router.get("/home")
 async def home(current_user: models.User = Depends(get_current_user)):
-    return {"message": f"Hello, {current_user.username}, you are logged in!"}
+    return {"message": f"Hello, {current_user.username}, you are successfully logged in!"}
