@@ -26,7 +26,11 @@ def login(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"Invalid Password"
         )
-
+    if user.is_verified != True:
+        raise HTTPException(
+            status_code = status.HTTP_401_UNAUTHORIZED,
+            detail= "Account Not Verified"
+        )
     access_token = JWTtoken.create_access_token(
         data={"sub": user.username, "id": user.id}
     )

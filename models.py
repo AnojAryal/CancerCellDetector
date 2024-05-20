@@ -14,6 +14,7 @@ class User(Base):
     gender = Column(String)
     contact_no = Column(String)
     hashed_password = Column(String)
+    is_verified = Column(Boolean, default=False)
 
     login_info = relationship("UserLogin", uselist=False, back_populates="user")
 
