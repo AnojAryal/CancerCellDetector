@@ -9,7 +9,6 @@ app = FastAPI()
 
 models.Base.metadata.create_all(engine)
 
-# Configuring CORS middleware
 origins = [
     "http://localhost",
     "http://localhost:5173"
