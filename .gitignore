@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 # Dependency directories
-.env/
+.env
 env/
 venv/
 ENV/
