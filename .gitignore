@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Dependency directories
+.env/
+env/
+venv/
+ENV/
+
+# Python virtual environments
+/.venv/
+venv/
+pip/
+pipenv/
+.peachpy/
+.venv/
+pip-selfcheck.json
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Other generated files
+instance/
+dist/
+build/
+*.egg-info/
