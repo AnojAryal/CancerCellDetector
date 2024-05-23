@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', path='/CancerDetector/css/base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', path='/CancerDetector/css/bootstrap.css') }}"
+    />
+
+    <title>CancerCellDetector</title>
+  </head>
+  <body>
+    <!-- Container -->
+    {% block content %} {% endblock %}
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', path='/CancerDetector/js/jquery-slim.js') }}"></script>
+    <script src="{{ url_for('static', path='/CancerDetector/js/popper.js') }}"></script>
+    <script src="{{ url_for('static', path='/CancerDetector/js/bootstrap.js') }}"></script>
+  </body>
+</html>
