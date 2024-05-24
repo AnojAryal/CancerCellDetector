@@ -37,7 +37,7 @@ def send_verification_email(email: str, token: str):
 
 
 def send_password_reset_email(email: str, token: str):
-    reset_link = f"http://localhost:8000/password-change/reset-password?token={token}"
+    reset_link = f"http://localhost:8000/reset-password?token={token}"
     subject = "Password Reset"
     body = f"Hi,\n\nYou have requested to reset your password. Please click on the following link to reset your password:\n{reset_link}\n\nIf you didn't request this, you can safely ignore this email.\n\nThank you!"
     send_email(email, subject, body)
