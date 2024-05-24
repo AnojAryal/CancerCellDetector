@@ -1,22 +1,11 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-import datetime
 import database
 import models
-
-TOKEN_EXPIRY_MINUTES = 30
-
 
 def delete_expired_tokens():
     db = database.SessionLocal()
     try:
-        expiration_time = datetime.datetime.utcnow() - datetime.timedelta(
-            minutes=TOKEN_EXPIRY_MINUTES
-        )
-        expired_tokens = (
-            db.query(models.PasswordResetToken)
-            .filter(models.PasswordResetToken.created_at < expiration_time)
-            .all()
-        )
+        expired_tokens = db.query(models.PasswordResetToken).all()
         if expired_tokens:
             for token in expired_tokens:
                 db.delete(token)
@@ -24,6 +13,12 @@ def delete_expired_tokens():
             print("Cleaning process successful")
         else:
             print("Nothing to clean")
+        
+       
+        now = datetime.datetime.utcnow()
+        if now.hour == 0 and now.minute == 0:
+            print("Message cleaner is running at 12 AM")
+            
     finally:
         db.close()
 
@@ -32,10 +27,8 @@ def delete_expired_tokens():
 scheduler = BackgroundScheduler()
 
 
-print("Message cleaner is now starting...")
-
+# Add the job to the scheduler
 scheduler.add_job(delete_expired_tokens, "cron", hour=0, minute=0)
-
 
 # Start the scheduler
 scheduler.start()
