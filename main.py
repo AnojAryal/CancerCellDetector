@@ -1,19 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine
-from routers import user, authentication
+from routers import user, authentication, password_reset
 import models as models
+from starlette.staticfiles import StaticFiles
+import cleanup
+
 
 app = FastAPI()
 
 
 models.Base.metadata.create_all(engine)
 
-# Configuring CORS middleware
-origins = [
-    "http://localhost",
-    "http://localhost:5173"
-]
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+origins = ["http://localhost", "http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,3 +28,4 @@ app.add_middleware(
 # Include routers
 app.include_router(user.router)
 app.include_router(authentication.router)
+app.include_router(password_reset.router)

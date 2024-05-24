@@ -28,8 +28,7 @@ def login(
         )
     if user.is_verified != True:
         raise HTTPException(
-            status_code = status.HTTP_401_UNAUTHORIZED,
-            detail= "Account Not Verified"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Account Not Verified"
         )
     access_token = JWTtoken.create_access_token(
         data={"sub": user.username, "id": user.id}
@@ -39,4 +38,6 @@ def login(
 
 @router.get("/home")
 async def home(current_user: models.User = Depends(get_current_user)):
-    return {"message": f"Hello, {current_user.username}, you are successfully logged in!"}
+    return {
+        "message": f"Hello, {current_user.username}, you are successfully logged in!"
+    }

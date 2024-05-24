@@ -24,8 +24,9 @@ def create_access_token(data: dict):
     return encoded_jwt
 
 
-
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)
+):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -34,12 +35,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             raise get_user_exception()
         user = db.query(models.User).filter(models.User.id == id).first()
         if user is None:
-            raise  get_user_exception()
-        
+            raise get_user_exception()
+
         return user
     except JWTError:
         raise get_user_exception()
-
 
 
 def get_user_exception():
