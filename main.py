@@ -4,6 +4,8 @@ from database import engine
 from routers import user, authentication, password_reset
 import models as models
 from starlette.staticfiles import StaticFiles
+import cleanup
+
 
 app = FastAPI()
 
@@ -11,6 +13,7 @@ app = FastAPI()
 models.Base.metadata.create_all(engine)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 origins = ["http://localhost", "http://localhost:5173"]
 
