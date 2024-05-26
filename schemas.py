@@ -22,7 +22,7 @@ class User(UserBase):
     is_verified: bool
 
     class Config:
-        orm_mode = True
+        from_attrs = True
 
 
 class Login(BaseModel):
@@ -64,7 +64,7 @@ class Patient(PatientBase):
     id: UUID4
 
     class Config:
-        orm_mode = True
+        from_attrs = True
 
 
 class AddressBase(BaseModel):
@@ -81,7 +81,7 @@ class Address(AddressBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attrs = True
 
 
 class CellTestBase(BaseModel):
@@ -101,7 +101,7 @@ class CellTest(CellTestBase):
     id: UUID4
 
     class Config:
-        orm_mode = True
+        from_attrs = True
 
 
 class ResultBase(BaseModel):
@@ -118,7 +118,7 @@ class Result(ResultBase):
     id: UUID4
 
     class Config:
-        orm_mode = True
+        from_attrs = True
 
 
 class CellTestImageDataBase(BaseModel):
@@ -134,7 +134,7 @@ class CellTestImageData(CellTestImageDataBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attrs = True
 
 
 class ResultImageDataBase(BaseModel):
@@ -150,4 +150,4 @@ class ResultImageData(ResultImageDataBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attrs = True
