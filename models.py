@@ -60,7 +60,7 @@ class Patient(Base):
     phone = Column(String(255), nullable=True)
     birth_date = Column(Date, nullable=False)
 
-    addresses = relationship("Address", back_populates="patient")
+    address = relationship("Address", uselist=False, back_populates="patient")
     cell_tests = relationship("CellTest", back_populates="patient")
 
 
@@ -70,10 +70,10 @@ class Address(Base):
     street = Column(String(255), nullable=False)
     city = Column(String(255), nullable=False)
     patient_id = Column(
-        UUID(as_uuid=True), ForeignKey("lab_patient.id"), nullable=False
+        UUID(as_uuid=True), ForeignKey("lab_patient.id"), nullable=False, unique=True
     )
 
-    patient = relationship("Patient", back_populates="addresses")
+    patient = relationship("Patient", back_populates="address")
 
 
 class CellTest(Base):
