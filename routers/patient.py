@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
+from uuid import UUID
 import database, schemas, models
 
 
@@ -28,7 +29,7 @@ def create_patient(patient_data: schemas.PatientCreate, db: Session = Depends(ge
 
 
 @router.get("/{id}")
-def get_patient_by_id(id: int, db: Session = Depends(get_db)):
+def get_patient_by_id(id: UUID, db: Session = Depends(get_db)):
     patient = db.query(models.Patient).filter(models.Patient.id == id).first()
     if not patient:
         raise HTTPException(status_code=404, detail=f"Patient with ID {id} not found")
