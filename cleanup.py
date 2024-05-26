@@ -2,6 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import database
 import models
 
+
 def delete_expired_tokens():
     db = database.SessionLocal()
     try:
@@ -13,12 +14,11 @@ def delete_expired_tokens():
             print("Cleaning process successful")
         else:
             print("Nothing to clean")
-        
-       
+
         now = datetime.datetime.utcnow()
         if now.hour == 0 and now.minute == 0:
             print("Message cleaner is running at 12 AM")
-            
+
     finally:
         db.close()
 
