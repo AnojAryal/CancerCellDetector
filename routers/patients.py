@@ -34,3 +34,31 @@ def get_patient_by_id(id: UUID, db: Session = Depends(get_db)):
     if not patient:
         raise HTTPException(status_code=404, detail=f"Patient with ID {id} not found")
     return patient
+
+
+@router.post(
+    "/address/",
+    response_model=schemas.AddressCreate,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_address(address_data: schemas.AddressCreate, db: Session = Depends(get_db)):
+
+    new_address = models.Address(
+        street=address_data.street,
+        city=address_data.city,
+        patient_id=address_data.patient_id,
+    )
+
+    db.add(new_address)
+    db.commit()
+    db.refresh(new_address)
+
+    return new_address
+
+
+@router.get("/address/{id}")
+def get_address_by_id(id: int, db: Session = Depends(get_db)):
+    address = db.query(models.Address).filter(models.Address.id == id).first()
+    if not address:
+        raise HTTPException(status_code=404, detail=f"Address with ID {id} not found")
+    return address

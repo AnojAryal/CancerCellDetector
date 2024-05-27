@@ -35,3 +35,29 @@ def get_cellTest_by_id(id: UUID, db: Session = Depends(get_db)):
     if not cell_test:
         raise HTTPException(status_code=404, detail=f"Test with ID {id} not found")
     return cell_test
+
+
+@router.post(
+    "/result/", response_model=schemas.Result, status_code=status.HTTP_201_CREATED
+)
+def create_result(result_data: schemas.ResultCreate, db: Session = Depends(get_db)):
+
+    new_result = models.Result(
+        description=result_data.description,
+        created_at=result_data.created_at,
+        celltest_id=result_data.celltest_id,
+    )
+
+    db.add(new_result)
+    db.commit()
+    db.refresh(new_result)
+
+    return new_result
+
+
+@router.get("/result/{id}")
+def get_cellTest_by_id(id: UUID, db: Session = Depends(get_db)):
+    result = db.query(models.Result).filter(models.Result.id == id).first()
+    if not result:
+        raise HTTPException(status_code=404, detail=f"Result with ID {id} not found")
+    return result
