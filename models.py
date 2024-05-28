@@ -15,6 +15,7 @@ import datetime
 from database import Base
 
 
+# User model
 class User(Base):
     __tablename__ = "users"
 
@@ -29,18 +30,8 @@ class User(Base):
     hashed_password = Column(String)
     is_verified = Column(Boolean, default=False)
 
-    login_info = relationship("UserLogin", uselist=False, back_populates="user")
 
-
-class UserLogin(Base):
-    __tablename__ = "user_login"
-
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-
-    user = relationship("User", back_populates="login_info")
-
-
+# Password Reset Token model
 class PasswordResetToken(Base):
     __tablename__ = "password_reset_tokens"
 
@@ -51,6 +42,7 @@ class PasswordResetToken(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 
+# Patient model
 class Patient(Base):
     __tablename__ = "lab_patient"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -64,6 +56,7 @@ class Patient(Base):
     cell_tests = relationship("CellTest", back_populates="patient")
 
 
+# Address model
 class Address(Base):
     __tablename__ = "lab_address"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -76,6 +69,7 @@ class Address(Base):
     patient = relationship("Patient", back_populates="address")
 
 
+# Cell Test model
 class CellTest(Base):
     __tablename__ = "lab_celltest"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -93,6 +87,7 @@ class CellTest(Base):
     cell_test_images = relationship("CellTestImageData", back_populates="cell_test")
 
 
+# Result model
 class Result(Base):
     __tablename__ = "lab_result"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -106,6 +101,7 @@ class Result(Base):
     result_images = relationship("ResultImageData", back_populates="result")
 
 
+# Cell Test Image Data model
 class CellTestImageData(Base):
     __tablename__ = "lab_celltestimagedata"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -117,6 +113,7 @@ class CellTestImageData(Base):
     cell_test = relationship("CellTest", back_populates="cell_test_images")
 
 
+# Result Image Data model
 class ResultImageData(Base):
     __tablename__ = "lab_resultimagedata"
     id = Column(Integer, primary_key=True, autoincrement=True)
