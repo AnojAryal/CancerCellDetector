@@ -2,16 +2,21 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from uuid import UUID
 import database, schemas, models
-
+from JWTtoken import get_current_user
 
 router = APIRouter(prefix="/patient", tags=["Patient"])
 get_db = database.get_db
 
 
+# Create a new patient
 @router.post(
     "/", response_model=schemas.PatientCreate, status_code=status.HTTP_201_CREATED
 )
-def create_patient(patient_data: schemas.PatientCreate, db: Session = Depends(get_db)):
+def create_patient(
+    patient_data: schemas.PatientCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
 
     new_patient = models.Patient(
         first_name=patient_data.first_name,
@@ -28,8 +33,13 @@ def create_patient(patient_data: schemas.PatientCreate, db: Session = Depends(ge
     return new_patient
 
 
-@router.get("/{id}")
-def get_patient_by_id(id: UUID, db: Session = Depends(get_db)):
+# Retrieve patients by their ID
+@router.get("/{patient_id}")
+def get_patient_by_id(
+    patient_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
     patient = db.query(models.Patient).filter(models.Patient.id == id).first()
     if not patient:
         raise HTTPException(status_code=404, detail=f"Patient with ID {id} not found")
@@ -37,18 +47,34 @@ def get_patient_by_id(id: UUID, db: Session = Depends(get_db)):
 
 
 @router.post(
-    "/address/",
-    response_model=schemas.AddressCreate,
+    "/{patient_id}/address",
+    response_model=schemas.Address,
     status_code=status.HTTP_201_CREATED,
 )
-def create_address(address_data: schemas.AddressCreate, db: Session = Depends(get_db)):
-
+def create_address_for_patient(
+    patient_id: UUID,
+    address_data: schemas.AddressCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    # Check if the current user is authenticated
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication required",
+        )
+    # Check if the patient exists
+    patient = db.query(models.Patient).filter(models.Patient.id == patient_id).first()
+    if not patient:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Patient not found",
+        )
     new_address = models.Address(
         street=address_data.street,
         city=address_data.city,
-        patient_id=address_data.patient_id,
+        patient_id=patient_id,
     )
-
     db.add(new_address)
     db.commit()
     db.refresh(new_address)
@@ -56,9 +82,43 @@ def create_address(address_data: schemas.AddressCreate, db: Session = Depends(ge
     return new_address
 
 
-@router.get("/address/{id}")
-def get_address_by_id(id: int, db: Session = Depends(get_db)):
-    address = db.query(models.Address).filter(models.Address.id == id).first()
+# Retrieve address by patient ID
+@router.get("/{patient_id}/address")
+def get_address_by_patient_id(
+    patient_id: UUID,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    address = (
+        db.query(models.Address).filter(models.Address.patient_id == patient_id).all()
+    )
     if not address:
-        raise HTTPException(status_code=404, detail=f"Address with ID {id} not found")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Address for patient with ID {patient_id} not found",
+        )
+    return address
+
+
+# Retrieve an address for a patient by patient ID and address ID
+@router.get("/{patient_id}/address/{address_id}", response_model=schemas.Address)
+def get_address_for_patient(
+    patient_id: str,
+    address_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    address = (
+        db.query(models.Address)
+        .filter(
+            models.Address.id == address_id, models.Address.patient_id == patient_id
+        )
+        .first()
+    )
+    if not address:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Address with ID {address_id} for patient with ID {patient_id} not found",
+        )
+
     return address
