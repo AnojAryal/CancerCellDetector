@@ -5,7 +5,8 @@ import jwt
 import database, schemas, models
 from hashing import Hashing
 from email_utils import send_verification_email
-from JWTtoken import get_admin_user
+from JWTtoken import get_current_user, get_admin_or_hospital_admin
+
 
 router = APIRouter(prefix="/users", tags=["Users"])
 get_db = database.get_db
@@ -19,13 +20,19 @@ async def create_user(
     user: schemas.UserCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_admin: models.User = Depends(get_admin_user),
+    current_user: models.User = Depends(get_admin_or_hospital_admin),
 ):
     # Checking if the username or email already exists
     if db.query(models.User).filter(models.User.username == user.username).first():
         raise HTTPException(status_code=400, detail="Username already registered")
     if db.query(models.User).filter(models.User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
+
+
+    if current_user.is_hospital_admin and current_user.hospital_id != user.hospital_id:
+        raise HTTPException(
+            status_code=403, detail="Hospital admin ID and user ID don't match"
+        )
 
     hashed_password = Hashing.bcrypt(user.password)
 
@@ -41,6 +48,7 @@ async def create_user(
         is_verified=False,
         is_admin=user.is_admin,
         is_hospital_admin=user.is_hospital_admin,
+        hospital_id=user.hospital_id,
     )
 
     db.add(new_user)
@@ -75,7 +83,6 @@ def verify_user_email(token: str, db: Session = Depends(get_db)):
             )
 
         user = db.query(models.User).filter(models.User.id == user_id).first()
-
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
