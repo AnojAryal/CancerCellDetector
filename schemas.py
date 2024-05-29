@@ -80,7 +80,7 @@ class PatientBase(BaseModel):
 
 # Model for creating a patient
 class PatientCreate(PatientBase):
-    pass
+    hospital_id: Optional[int] = None
 
 
 # Patient model
