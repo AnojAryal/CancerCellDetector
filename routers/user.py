@@ -5,7 +5,7 @@ import jwt
 import database, schemas, models
 from hashing import Hashing
 from email_utils import send_verification_email
-
+from JWTtoken import get_admin_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 get_db = database.get_db
@@ -19,7 +19,14 @@ async def create_user(
     user: schemas.UserCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
+    current_admin: models.User = Depends(get_admin_user),
 ):
+    # Checking if the username or email already exists
+    if db.query(models.User).filter(models.User.username == user.username).first():
+        raise HTTPException(status_code=400, detail="Username already registered")
+    if db.query(models.User).filter(models.User.email == user.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+
     hashed_password = Hashing.bcrypt(user.password)
 
     new_user = models.User(
@@ -32,6 +39,8 @@ async def create_user(
         contact_no=user.contact_no,
         hashed_password=hashed_password,
         is_verified=False,
+        is_admin=user.is_admin,
+        is_hospital_admin=user.is_hospital_admin,
     )
 
     db.add(new_user)
@@ -90,8 +99,7 @@ def verify_user_email(token: str, db: Session = Depends(get_db)):
         )
 
 
-# get the user by id
-@router.get("/{id}")
+@router.get("/{id}", response_model=schemas.User)
 def get_user_by_id(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:

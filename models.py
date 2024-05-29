@@ -29,6 +29,11 @@ class User(Base):
     contact_no = Column(String)
     hashed_password = Column(String)
     is_verified = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
+    is_hospital_admin = Column(Boolean, default=False)
+    hospital_id = Column(Integer, ForeignKey("hospitals.id"), nullable=True)
+
+    hospital = relationship("Hospital", back_populates="users")
 
 
 # Password Reset Token model
@@ -42,23 +47,41 @@ class PasswordResetToken(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
 
+# Hospital model
+class Hospital(Base):
+    __tablename__ = "hospitals"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(255), nullable=False)
+    address = Column(String(255), nullable=True)
+    phone = Column(String(100), nullable=True)
+    email = Column(String(254), nullable=True)
+
+    users = relationship("User", back_populates="hospital")
+    patients = relationship("Patient", back_populates="hospital")
+
+
 # Patient model
 class Patient(Base):
     __tablename__ = "lab_patient"
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     email = Column(String(254), nullable=False, unique=True)
     phone = Column(String(255), nullable=True)
     birth_date = Column(Date, nullable=False)
+    hospital_id = Column(Integer, ForeignKey("hospitals.id"), nullable=True)
 
     address = relationship("Address", uselist=False, back_populates="patient")
     cell_tests = relationship("CellTest", back_populates="patient")
+    hospital = relationship("Hospital", back_populates="patients")
 
 
 # Address model
 class Address(Base):
     __tablename__ = "lab_address"
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     street = Column(String(255), nullable=False)
     city = Column(String(255), nullable=False)
@@ -72,6 +95,7 @@ class Address(Base):
 # Cell Test model
 class CellTest(Base):
     __tablename__ = "lab_celltest"
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
@@ -90,6 +114,7 @@ class CellTest(Base):
 # Result model
 class Result(Base):
     __tablename__ = "lab_result"
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     description = Column(Text, nullable=True)
     created_at = Column(Date, nullable=False)
@@ -104,6 +129,7 @@ class Result(Base):
 # Cell Test Image Data model
 class CellTestImageData(Base):
     __tablename__ = "lab_celltestimagedata"
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     image = Column(String(100), nullable=False)
     cell_test_id = Column(
@@ -116,6 +142,7 @@ class CellTestImageData(Base):
 # Result Image Data model
 class ResultImageData(Base):
     __tablename__ = "lab_resultimagedata"
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     image = Column(String(100), nullable=False)
     result_id = Column(UUID(as_uuid=True), ForeignKey("lab_result.id"), nullable=False)
