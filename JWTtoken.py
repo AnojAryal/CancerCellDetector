@@ -58,3 +58,12 @@ def get_admin_user(current_user: models.User = Depends(get_current_user)):
             detail="You donot have permission",
         )
     return current_user
+
+
+def get_admin_or_hospital_admin(current_user: models.User = Depends(get_current_user)):
+    if not current_user.is_admin and not current_user.is_hospital_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission",
+        )
+    return current_user

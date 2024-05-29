@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine
-from routers import user, authentication, password_reset, patients, cell_tests, hospitals
+from routers import (
+    user,
+    authentication,
+    password_reset,
+    patients,
+    cell_tests,
+    hospitals,
+)
 import models as models
 from starlette.staticfiles import StaticFiles
 import cleanup

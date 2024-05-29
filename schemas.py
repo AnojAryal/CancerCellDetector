@@ -20,6 +20,7 @@ class UserCreate(UserBase):
     password: str
     is_admin: Optional[bool] = False
     is_hospital_admin: Optional[bool] = False
+    hospital_id: Optional[int] = None
 
 
 # User model
