@@ -1,6 +1,7 @@
-from pydantic import BaseModel, EmailStr, UUID4
+from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import date, datetime
+from uuid import UUID
 
 
 # Base model for User
@@ -17,43 +18,54 @@ class UserBase(BaseModel):
 # Model for creating a user with password
 class UserCreate(UserBase):
     password: str
+    is_admin: Optional[bool] = False
+    is_hospital_admin: Optional[bool] = False
 
 
 # User model
 class User(UserBase):
     id: int
     is_verified: bool
+    is_admin: bool
+    is_hospital_admin: bool
+    hospital_id: Optional[int]
 
     class Config:
-        from_attrs = True
+        from_attributes = True
 
 
-# Login model
-class Login(BaseModel):
-    username: str
-    password: str
-
-
-# Token model
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-# Token data model
-class TokenData(BaseModel):
-    username: Optional[str] = None
-
-
-# Model for requesting password reset
+# Model for password reset token
 class PasswordResetRequest(BaseModel):
-    email: str
-
-
-# Model for confirming password reset
-class PasswordResetConfirm(BaseModel):
+    email: EmailStr
     token: str
-    new_password: str
+    used: bool
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+# Base model for Hospital
+class HospitalBase(BaseModel):
+    name: str
+    address: Optional[str]
+    phone: Optional[str]
+    email: Optional[EmailStr]
+
+
+# Model for creating a hospital
+class HospitalCreate(HospitalBase):
+    pass
+
+
+# Hospital model
+class Hospital(HospitalBase):
+    id: int
+    users: List[User] = []
+    patients: List["Patient"] = []
+
+    class Config:
+        from_attributes = True
 
 
 # Base model for Patient
@@ -72,30 +84,31 @@ class PatientCreate(PatientBase):
 
 # Patient model
 class Patient(PatientBase):
-    id: UUID4
+    id: UUID
+    hospital_id: Optional[int]
 
     class Config:
-        from_attrs = True
+        from_attributes = True
 
 
 # Base model for Address
 class AddressBase(BaseModel):
     street: str
     city: str
-    patient_id: UUID4
 
 
 # Model for creating an address
 class AddressCreate(AddressBase):
-    pass
+    patient_id: UUID
 
 
 # Address model
 class Address(AddressBase):
     id: int
+    patient_id: UUID
 
     class Config:
-        from_attrs = True
+        from_attributes = True
 
 
 # Base model for Cell Test
@@ -105,7 +118,6 @@ class CellTestBase(BaseModel):
     updated_at: datetime
     created_at: datetime
     detection_status: str
-    patient_id: UUID4
 
 
 # Model for creating a cell test
@@ -115,17 +127,17 @@ class CellTestCreate(CellTestBase):
 
 # Cell Test model
 class CellTest(CellTestBase):
-    id: UUID4
+    id: UUID
+    patient_id: UUID
 
     class Config:
-        from_attrs = True
+        from_attributes = True
 
 
 # Base model for Result
 class ResultBase(BaseModel):
     description: Optional[str]
     created_at: date
-    celltest_id: UUID4
 
 
 # Model for creating a result
@@ -135,45 +147,46 @@ class ResultCreate(ResultBase):
 
 # Result model
 class Result(ResultBase):
-    id: UUID4
+    id: UUID
+    cell_test_id: UUID
 
     class Config:
-        from_attrs = True
+        from_attributes = True
 
 
 # Base model for Cell Test Image Data
-class CellTestImageDataBase(BaseModel):
+class CellTestImageData(BaseModel):
     image: str
-    cell_test_id: UUID4
+    cell_test_id: UUID
 
 
 # Model for creating cell test image data
-class CellTestImageDataCreate(CellTestImageDataBase):
+class CellTestImageDataCreate(CellTestImageData):
     pass
 
 
 # Cell Test Image Data model
-class CellTestImageData(CellTestImageDataBase):
+class CellTestImageData(CellTestImageData):
     id: int
 
     class Config:
-        from_attrs = True
+        from_attributes = True
 
 
 # Base model for Result Image Data
-class ResultImageDataBase(BaseModel):
+class ResultImageData(BaseModel):
     image: str
-    result_id: UUID4
+    result_id: UUID
 
 
 # Model for creating result image data
-class ResultImageDataCreate(ResultImageDataBase):
+class ResultImageDataCreate(ResultImageData):
     pass
 
 
 # Result Image Data model
-class ResultImageData(ResultImageDataBase):
+class ResultImageData(ResultImageData):
     id: int
 
     class Config:
-        from_attrs = True
+        from_attributes = True

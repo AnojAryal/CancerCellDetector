@@ -32,7 +32,7 @@ def send_email(email: str, subject: str, body: str):
 def send_verification_email(email: str, token: str):
     verification_link = f"http://localhost:8000/users/verify?token={token}"
     subject = "Verify your email"
-    body = f"Hi,\n\nPlease verify your email by clicking on the following link:\n{verification_link}\n\nThank you!"
+    body = f"Hi,\n\nYour account been registered in our system. Please click the following link to verify your email:\n{verification_link}\n\nThank you!"
     send_email(email, subject, body)
 
 
