@@ -22,6 +22,14 @@ class UserCreate(UserBase):
     is_hospital_admin: Optional[bool] = False
     hospital_id: Optional[int] = None
 
+    # Override to only include hospital_id if the user is an admin
+    @property
+    def dict(self):
+        if self.is_admin:
+            return super().dict()
+        else:
+            return {k: v for k, v in super().dict().items() if k != "hospital_id"}
+
 
 # User model
 class User(UserBase):
@@ -32,7 +40,7 @@ class User(UserBase):
     hospital_id: Optional[int]
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # Model for password reset token
@@ -80,7 +88,7 @@ class PatientBase(BaseModel):
 
 # Model for creating a patient
 class PatientCreate(PatientBase):
-    hospital_id: Optional[int] = None
+    pass
 
 
 # Patient model

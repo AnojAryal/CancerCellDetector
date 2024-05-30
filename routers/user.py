@@ -20,7 +20,7 @@ async def create_user(
     user: schemas.UserCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_admin_or_hospital_admin),
+    current_user: models.User = Depends(get_current_user),
 ):
     # Checking if the username or email already exists
     if db.query(models.User).filter(models.User.username == user.username).first():
@@ -28,11 +28,15 @@ async def create_user(
     if db.query(models.User).filter(models.User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    # Set is_admin to False by default if the current user is not an admin
+    is_admin = user.is_admin if current_user.is_admin else False
 
-    if current_user.is_hospital_admin and current_user.hospital_id != user.hospital_id:
-        raise HTTPException(
-            status_code=403, detail="Hospital admin ID and user ID don't match"
-        )
+    print("is_admin after setting in endpoint:", is_admin)
+
+    # Determine hospital_id based on the current user's role
+    hospital_id = (
+        user.hospital_id if current_user.is_admin else current_user.hospital_id
+    )
 
     hashed_password = Hashing.bcrypt(user.password)
 
@@ -46,9 +50,9 @@ async def create_user(
         contact_no=user.contact_no,
         hashed_password=hashed_password,
         is_verified=False,
-        is_admin=user.is_admin,
+        is_admin=is_admin,
         is_hospital_admin=user.is_hospital_admin,
-        hospital_id=user.hospital_id,
+        hospital_id=hospital_id,
     )
 
     db.add(new_user)
