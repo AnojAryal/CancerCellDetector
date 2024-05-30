@@ -20,7 +20,7 @@ async def create_user(
     user: schemas.UserCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user),
+    current_user: models.User = Depends(get_admin_or_hospital_admin),
 ):
     # Checking if the username or email already exists
     if db.query(models.User).filter(models.User.username == user.username).first():
