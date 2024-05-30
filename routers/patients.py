@@ -9,18 +9,14 @@ get_db = database.get_db
 
 
 # Create a new patient
-@router.post(
-    "/", response_model=schemas.PatientCreate, status_code=status.HTTP_201_CREATED
-)
+@router.post("/", response_model=schemas.Patient, status_code=status.HTTP_201_CREATED)
 def create_patient(
     patient_data: schemas.PatientCreate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    if current_user.hospital_id != patient_data.hospital_id:
-        raise HTTPException(
-            status_code=403, detail="Current userID and HospitalID don't match"
-        )
+    # Set hospital_id from current_user
+    hospital_id = current_user.hospital_id
 
     new_patient = models.Patient(
         first_name=patient_data.first_name,
@@ -28,7 +24,7 @@ def create_patient(
         email=patient_data.email,
         phone=patient_data.phone,
         birth_date=patient_data.birth_date,
-        hospital_id = patient_data.hospital_id
+        hospital_id=hospital_id,
     )
 
     db.add(new_patient)
