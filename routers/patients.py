@@ -17,6 +17,10 @@ def create_patient(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    if current_user.hospital_id != patient_data.hospital_id:
+        raise HTTPException(
+            status_code=403, detail="Current userID and HospitalID don't match"
+        )
 
     new_patient = models.Patient(
         first_name=patient_data.first_name,
@@ -24,6 +28,7 @@ def create_patient(
         email=patient_data.email,
         phone=patient_data.phone,
         birth_date=patient_data.birth_date,
+        hospital_id = patient_data.hospital_id
     )
 
     db.add(new_patient)
