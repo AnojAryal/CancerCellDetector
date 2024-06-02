@@ -15,6 +15,7 @@ import cleanup
 import os
 import logging
 from middleware.advanced import AdvancedMiddleWare
+from middleware.hospital_access import HospitalAccessMiddleware
 
 
 # Configure logging
@@ -30,6 +31,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Add the custom middleware
 rate_limit_seconds = int(os.getenv("RATE_LIMIT_SECONDS", 1))
 
+
 app.add_middleware(AdvancedMiddleWare, rate_limit=rate_limit_seconds)
 
 
@@ -43,6 +45,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
+
+app.add_middleware(HospitalAccessMiddleware)
 
 # Include routers
 app.include_router(user.router)
