@@ -40,7 +40,7 @@ class User(UserBase):
     hospital_id: Optional[int]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # Model for password reset token
