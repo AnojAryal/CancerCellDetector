@@ -31,7 +31,12 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Account Not Verified"
         )
     access_token = JWTtoken.create_access_token(
-        data={"sub": user.username, "id": user.id}
+        data={
+            "sub": user.username,
+            "id": user.id,
+            "is_admin": user.is_admin,
+            "hospital_id": user.hospital_id,
+        }
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
