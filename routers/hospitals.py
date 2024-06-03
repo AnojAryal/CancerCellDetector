@@ -7,6 +7,7 @@ from fastapi import (
 from sqlalchemy.orm import Session
 import database, schemas, models
 from JWTtoken import get_admin_user
+
 router = APIRouter(prefix="/hospital", tags=["Hospital"])
 get_db = database.get_db
 
