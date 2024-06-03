@@ -84,6 +84,7 @@ class PatientBase(BaseModel):
     email: EmailStr
     phone: Optional[str]
     birth_date: date
+    hospital_id: Optional[int]
 
 
 # Model for creating a patient
@@ -147,6 +148,7 @@ class CellTest(CellTestBase):
 class ResultBase(BaseModel):
     description: Optional[str]
     created_at: date
+    cell_test_id: str
 
 
 # Model for creating a result
