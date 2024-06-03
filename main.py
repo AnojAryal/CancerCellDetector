@@ -6,16 +6,16 @@ from routers import (
     user,
     authentication,
     password_reset,
+    hospitals,
     patients,
     cell_tests,
-    hospitals,
 )
 import models as models
 import cleanup
 import os
 import logging
 from middleware.advanced import AdvancedMiddleWare
-from middleware.hospital_access import HospitalAccessMiddleware
+# from middleware.hospital_access import HospitalAccessMiddleware
 
 
 # Configure logging
@@ -46,7 +46,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(HospitalAccessMiddleware)
+# app.add_middleware(HospitalAccessMiddleware)
 
 # Include routers
 app.include_router(user.router)
