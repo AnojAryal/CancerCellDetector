@@ -155,7 +155,7 @@ async def delete_patient(
 
 # Create an address for a patient
 @router.post(
-    "/{hospital_id}/patients/{patient_id}/address/{address_id}",
+    "/{hospital_id}/patients/{patient_id}/address",
     response_model=schemas.Address,
 )
 async def create_address_for_patient(
@@ -272,7 +272,7 @@ async def update_address_for_patient(
 
 # Delete an address for a patient
 @router.delete(
-    "/{hospital_id}/patients/{patient_id}/addresses/{address_id}",
+    "/{hospital_id}/patients/{patient_id}/address/{address_id}",
     response_model=schemas.Address,
 )
 async def delete_address_for_patient(
