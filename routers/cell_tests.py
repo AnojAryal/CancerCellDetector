@@ -186,3 +186,35 @@ async def create_result_for_cell_test(
         created_at=db_result.created_at,
         cell_test_id=db_result.celltest_id,
     )
+
+
+@router.post(
+    "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/results/{result_id}/result-images/",
+    response_model=schemas.ResultImageDataCreate,
+)
+async def upload_result_image(
+    hospital_id: int,
+    patient_id: str,
+    cell_test_id: str,
+    result_id: str,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    try:
+
+        upload_dir = Path("media/images/result_images")
+
+        saved_image_path = save_image(file, upload_dir)
+
+        db_image = models.ResultImageData(
+            image=str(saved_image_path),
+            result_id=result_id,
+        )
+        db.add(db_image)
+        db.commit()
+        db.refresh(db_image)
+
+        return db_image
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload image: {e}")

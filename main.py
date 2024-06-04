@@ -10,8 +10,6 @@ from routers import (
     patients,
     cell_tests,
 )
-
-
 import models as models
 import cleanup
 import os
