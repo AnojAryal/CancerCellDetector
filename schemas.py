@@ -148,7 +148,7 @@ class CellTest(CellTestBase):
 class ResultBase(BaseModel):
     description: Optional[str]
     created_at: date
-    cell_test_id: str
+    celltest_id: UUID
 
 
 # Model for creating a result
@@ -159,7 +159,6 @@ class ResultCreate(ResultBase):
 # Result model
 class Result(ResultBase):
     id: UUID
-    cell_test_id: UUID
 
     class Config:
         from_attributes = True

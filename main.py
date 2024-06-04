@@ -51,8 +51,8 @@ app.add_middleware(HospitalAccessMiddleware)
 
 # Include routers
 app.include_router(user.router)
-app.include_router(hospitals.router)
 app.include_router(authentication.router)
 app.include_router(password_reset.router)
+app.include_router(hospitals.router)
 app.include_router(patients.router)
 app.include_router(cell_tests.router)
