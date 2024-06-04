@@ -7,11 +7,15 @@ from hashing import Hashing
 from email_utils import send_verification_email
 from JWTtoken import get_current_user, get_admin_or_hospital_admin
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter(prefix="/users", tags=["Users"])
 get_db = database.get_db
 
-SECRET_KEY = "f04b3e8a9d2c6e1b8a6c4e9b7d3f9a1c2e3b4d6f8a0c2e5b9d0a7f3b5d8f9a0c"
+SECRET_KEY = os.getenv("UserSecretKey")
 ALGORITHM = "HS256"
 
 

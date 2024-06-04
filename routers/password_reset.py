@@ -8,10 +8,16 @@ import hashing
 from fastapi.templating import Jinja2Templates
 from schemas import PasswordResetRequest
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(tags=["Password-reset"])
 
-SECRET_KEY = "09d18e094faa6ca2646c818166b7a18103b93f7099f6f0f4caa6cf63b88e8d3e7"
+SECRET_KEY = os.getenv("PasswordResetToken")
 TOKEN_EXPIRY_MINUTES = 30
 
 serializer = URLSafeTimedSerializer(SECRET_KEY)
