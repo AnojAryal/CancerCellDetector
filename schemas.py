@@ -43,6 +43,20 @@ class User(UserBase):
         from_attributes = True
 
 
+# user update model
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+    address: Optional[str] = None
+    blood_group: Optional[str] = None
+    gender: Optional[str] = None
+    contact_no: Optional[str] = None
+    is_admin: Optional[bool] = None
+    is_hospital_admin: Optional[bool] = None
+    hospital_id: Optional[int] = None
+
+
 # Model for password reset token
 class PasswordResetRequest(BaseModel):
     email: EmailStr
