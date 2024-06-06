@@ -46,7 +46,6 @@ class User(UserBase):
 # user update model
 class UserUpdate(BaseModel):
     username: Optional[str] = None
-    email: Optional[EmailStr] = None
     full_name: Optional[str] = None
     address: Optional[str] = None
     blood_group: Optional[str] = None

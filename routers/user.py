@@ -251,7 +251,7 @@ async def delete_user(
 
 
 # verify users email
-@router.get("/verify", response_model=dict)
+@router.get("/verify/{token}", response_model=dict)
 def verify_user_email(token: str, db: Session = Depends(get_db)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -283,4 +283,8 @@ def verify_user_email(token: str, db: Session = Depends(get_db)):
     except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)
         )

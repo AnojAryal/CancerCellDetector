@@ -2,6 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
 import os
 from dotenv import load_dotenv
 
@@ -28,7 +29,7 @@ def send_email(email: str, subject: str, body: str):
         message.attach(MIMEText(body, "plain"))
 
         server.sendmail(sender_email, email, message.as_string())
-        print("Email sent successfully!")
+        print(f"Email sent successfully to {email}")
     except Exception as e:
         print(f"Failed to send email to {email}: {e}")
     finally:
@@ -36,7 +37,7 @@ def send_email(email: str, subject: str, body: str):
 
 
 def send_verification_email(email: str, token: str):
-    verification_link = f"http://localhost:8000/users/verify?token={token}"
+    verification_link = f"http://localhost:8000/users/verify/{token}"
     subject = "Verify your email"
     body = f"Hi,\n\nYour account been registered in our system. Please click the following link to verify your email:\n{verification_link}\n\nThank you!"
     send_email(email, subject, body)

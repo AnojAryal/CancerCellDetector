@@ -14,7 +14,17 @@ class AdvancedMiddleWare(BaseHTTPMiddleware):
         super().__init__(app)
         self.rate_limit = rate_limit
         self.rate_limit_records: Dict[str, float] = defaultdict(float)
-        self.exempt_paths = ["/openapi.json", "/docs", "/redoc"]
+        # Paths exempt from rate limiting
+        self.exempt_paths = [
+            "/openapi.json",
+            "/docs",
+            "/redoc",
+            "/favicon.ico",
+            "/static/CancerDetector/css/bootstrap.css",
+            "/static/CancerDetector/js/jquery-slim.js",
+            "/static/CancerDetector/js/popper.js",
+            "/static/CancerDetector/js/bootstrap.js",
+        ]
 
     async def dispatch(self, request: Request, call_next):
         client_ip = request.client.host
