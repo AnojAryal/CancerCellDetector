@@ -6,6 +6,7 @@ from routers import (
     user,
     authentication,
     password_reset,
+    change_password,
     hospitals,
     patients,
     cell_tests,
@@ -54,6 +55,7 @@ app.add_middleware(HospitalAccessMiddleware)
 app.include_router(user.router)
 app.include_router(authentication.router)
 app.include_router(password_reset.router)
+app.include_router(change_password.router)
 app.include_router(hospitals.router)
 app.include_router(patients.router)
 app.include_router(cell_tests.router)

@@ -213,3 +213,9 @@ class ResultImageData(ResultImageData):
 
     class Config:
         from_attributes = True
+
+
+# Changing th epassword
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
