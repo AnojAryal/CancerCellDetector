@@ -24,7 +24,7 @@ def delete_expired_tokens():
             print("Nothing to clean")
 
         now = datetime.datetime.utcnow()
-        if now.hour == 18 and now.minute == 49:
+        if now.hour == 0 and now.minute == 00:
             print("Message cleaner is running at 12 AM")
 
     finally:
@@ -35,7 +35,7 @@ def delete_expired_tokens():
 scheduler = BackgroundScheduler()
 
 # Add the job to the scheduler
-scheduler.add_job(delete_expired_tokens, "cron", hour=18, minute=49)
+scheduler.add_job(delete_expired_tokens, "cron", hour=0, minute=00)
 
 # Start the scheduler
 scheduler.start()
