@@ -28,3 +28,6 @@ instance/
 dist/
 build/
 *.egg-info/
+
+#image folder
+media/

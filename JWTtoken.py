@@ -6,12 +6,18 @@ import database
 import models
 from sqlalchemy.orm import Session
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("JWTtoken")
 # Algorithm used for JWT token encoding and decoding
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-
+# OAuth2 password bearer scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
@@ -19,6 +25,7 @@ def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
+
     # Encode the data into a JWT token using the secret key and algorithm
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -49,3 +56,21 @@ def get_user_exception():
         headers={"WWW-Authenticate": "Bearer"},
     )
     return credentials_exception
+
+
+def get_admin_user(current_user: models.User = Depends(get_current_user)):
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You donot have permission",
+        )
+    return current_user
+
+
+def get_admin_or_hospital_admin(current_user: models.User = Depends(get_current_user)):
+    if not current_user.is_admin and not current_user.is_hospital_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission",
+        )
+    return current_user

@@ -2,11 +2,18 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 # SMTP server details
-smtp_server = "smtp.gmail.com"
-smtp_port = 587  # For TLS
-sender_email = "anoj1810@gmail.com"
-password = "utce zkpo jlen kaxq"
+smtp_server = os.getenv("server_name")
+smtp_port = os.getenv("server_port")
+sender_email = os.getenv("server_email")
+password = os.getenv("server_password")
 
 
 def send_email(email: str, subject: str, body: str):
@@ -22,7 +29,7 @@ def send_email(email: str, subject: str, body: str):
         message.attach(MIMEText(body, "plain"))
 
         server.sendmail(sender_email, email, message.as_string())
-        print("Email sent successfully!")
+        print(f"Email sent successfully to {email}")
     except Exception as e:
         print(f"Failed to send email to {email}: {e}")
     finally:
@@ -30,9 +37,9 @@ def send_email(email: str, subject: str, body: str):
 
 
 def send_verification_email(email: str, token: str):
-    verification_link = f"http://localhost:8000/users/verify?token={token}"
+    verification_link = f"http://localhost:8000/users/verify/{token}"
     subject = "Verify your email"
-    body = f"Hi,\n\nPlease verify your email by clicking on the following link:\n{verification_link}\n\nThank you!"
+    body = f"Hi,\n\nYour account been registered in our system. Please click the following link to verify your email:\n{verification_link}\n\nThank you!"
     send_email(email, subject, body)
 
 
