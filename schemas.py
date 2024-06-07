@@ -215,7 +215,7 @@ class ResultImageData(ResultImageData):
         from_attributes = True
 
 
-# Changing th epassword
+# Changing the password
 class PasswordChange(BaseModel):
     current_password: str
     new_password: str
