@@ -18,7 +18,7 @@ This project is a backend API for a Cancer Cell Detector application, built usin
 1. **Clone the repository:**
 
     git clone git@github.com:AnojAryal/CancerCellDetector.git *or*
-    https://github.com/AnojAryal/CancerCellDetector.git 
+    git clone https://github.com/AnojAryal/CancerCellDetector.git 
     
 
 2. **Create the virtual environment:**
@@ -30,6 +30,8 @@ This project is a backend API for a Cancer Cell Detector application, built usin
     *for linux*
     python3 -m venv venv
     source venv/bin/activate
+
+
 
 
 3. **Install the Dependencies**
@@ -44,8 +46,8 @@ This project is a backend API for a Cancer Cell Detector application, built usin
 
 5. **Testing endpoints**
 
-    /docs - test with swagger
-    /redoc - test with redoc
+    *   /docs - test with swagger
+    *  /redoc - test with redoc
 
 ## Contributing
 
@@ -53,7 +55,7 @@ If you'd like to contribute, please fork the repository and use a feature branch
 
 
 ## License
-This project is licensed under the terms of the MIT license.
+This project is licensed under the terms of the *MIT license*.
 
 
 ## Contact
