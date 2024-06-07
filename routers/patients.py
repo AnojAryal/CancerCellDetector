@@ -16,7 +16,11 @@ get_db = database.get_db
 
 
 # Create a patient for specific hospital
-@router.post("/{hospital_id}/patients", response_model=schemas.Patient)
+@router.post(
+    "/{hospital_id}/patients",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.Patient,
+)
 async def create_patient_for_hospital(
     patient: schemas.PatientCreate,
     db: Session = Depends(get_db),
@@ -156,6 +160,7 @@ async def delete_patient(
 # Create an address for a patient
 @router.post(
     "/{hospital_id}/patients/{patient_id}/address",
+    status_code=status.HTTP_201_CREATED,
     response_model=schemas.Address,
 )
 async def create_address_for_patient(
