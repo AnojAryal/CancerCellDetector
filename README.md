@@ -24,12 +24,12 @@ This project is a backend API for a Cancer Cell Detector application, built usin
 2. **Create the virtual environment:**
 
     *for windows*
-    python3 -m venv venv
-    source venv/bin/activate
+    * python3 -m venv venv
+    * source venv/bin/activate
 
     *for linux*
-    python3 -m venv venv
-    source venv/bin/activate
+    * python3 -m venv venv
+    * source venv/bin/activate
 
 
 
