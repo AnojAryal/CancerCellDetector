@@ -17,8 +17,8 @@ This project is a backend API for a Cancer Cell Detector application, built usin
 
 1. **Clone the repository:**
 
-    git clone git@github.com:AnojAryal/CancerCellDetector.git *or*
-    git clone https://github.com/AnojAryal/CancerCellDetector.git 
+    * git clone git@github.com:AnojAryal/CancerCellDetector.git *or*
+    * git clone https://github.com/AnojAryal/CancerCellDetector.git 
     
 
 2. **Create the virtual environment:**
