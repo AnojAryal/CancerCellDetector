@@ -3,8 +3,6 @@ from fastapi import (
     HTTPException,
     Depends,
     status,
-    BackgroundTasks,
-    Query,
     File,
     UploadFile,
 )
@@ -22,7 +20,9 @@ get_db = database.get_db
 
 # Create a cell test for a patient
 @router.post(
-    "/{hospital_id}/patients/{patient_id}/cell_tests", response_model=schemas.CellTest
+    "/{hospital_id}/patients/{patient_id}/cell_tests",
+    status_code=status.HTTP_201_CREATED,
+    response_model=schemas.CellTest,
 )
 async def create_cell_test_for_patient(
     hospital_id: int,
@@ -262,6 +262,7 @@ async def delete_cell_test_for_patient(
 # post image data for celltest
 @router.post(
     "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/data_images",
+    status_code=status.HTTP_201_CREATED,
     response_model=schemas.CellTestImageDataCreate,
 )
 async def upload_image(
@@ -397,6 +398,7 @@ async def get_cell_test_images(
 # Create a result for a cell test
 @router.post(
     "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/results",
+    status_code=status.HTTP_201_CREATED,
     response_model=schemas.Result,
 )
 async def create_result_for_cell_test(
@@ -516,6 +518,7 @@ async def get_results_for_cell_test(
 # post result image
 @router.post(
     "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/results/{result_id}/result-images/",
+    status_code=status.HTTP_201_CREATED,
     response_model=schemas.ResultImageDataCreate,
 )
 async def upload_result_image(
