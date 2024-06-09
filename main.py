@@ -31,12 +31,6 @@ models.Base.metadata.create_all(engine)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Add the custom middleware
-rate_limit_seconds = int(os.getenv("RATE_LIMIT_SECONDS", 1))
-
-
-app.add_middleware(AdvancedMiddleWare, rate_limit=rate_limit_seconds)
-
 
 # Add CORS middleware
 origins = ["http://localhost", "http://localhost:5173"]
@@ -49,7 +43,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(AdvancedMiddleWare)
 app.add_middleware(HospitalAccessMiddleware)
+
 
 # Include routers
 app.include_router(user.router)
