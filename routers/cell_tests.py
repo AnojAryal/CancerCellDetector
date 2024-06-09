@@ -460,13 +460,8 @@ async def create_result_for_cell_test(
     db.commit()
     db.refresh(db_result)
 
-    # Ensure cell_test_id is included in the response
-    return schemas.Result(
-        id=db_result.id,
-        description=db_result.description,
-        created_at=db_result.created_at,
-        cell_test_id=db_result.celltest_id,
-    )
+    # Return the created result
+    return db_result
 
 
 # retrive results
