@@ -28,16 +28,18 @@ async def send_reset_email(
     request: PasswordResetRequest, db: Session = Depends(database.get_db)
 ):
     try:
+        # Check if the email exists in the database
         user = db.query(models.User).filter(models.User.email == request.email).first()
-        if user:
-            token = serializer.dumps(request.email, salt="password-reset-salt")
-            reset_token = models.PasswordResetToken(email=request.email, token=token)
-            db.add(reset_token)
-            db.commit()
-            send_password_reset_email(request.email, token)
-            return {"message": "Password reset email sent"}
-        else:
-            raise HTTPException(status_code=404, detail="User not found")
+        if not user:
+            raise HTTPException(status_code=404, detail="Email is not registered")
+
+        # If the user exists, proceed with generating reset token and sending email
+        token = serializer.dumps(request.email, salt="password-reset-salt")
+        reset_token = models.PasswordResetToken(email=request.email, token=token)
+        db.add(reset_token)
+        db.commit()
+        send_password_reset_email(request.email, token)
+        return {"message": "Password reset email sent"}
     finally:
         db.close()
 

@@ -14,6 +14,8 @@ class AdvancedMiddleWare(BaseHTTPMiddleware):
         super().__init__(app)
         self.rate_limit = rate_limit
         self.rate_limit_records: Dict[str, float] = defaultdict(float)
+        # Methods exempt from rate limiting
+        # self.exempt_methods = ["GET"]
         # Paths exempt from rate limiting
         self.exempt_paths = [
             "/openapi.json",
@@ -30,6 +32,11 @@ class AdvancedMiddleWare(BaseHTTPMiddleware):
         client_ip = request.client.host
         current_time = time.time()
         path = request.url.path
+        # method = request.method
+
+        # Skip rate limiting for exempt methods
+        # if method in self.exempt_methods:
+        #     return await call_next(request)
 
         # Skip rate limiting for exempt paths
         if path not in self.exempt_paths:
