@@ -15,7 +15,7 @@ load_dotenv()
 SECRET_KEY = os.getenv("JWTtoken")
 # Algorithm used for JWT token encoding and decoding
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 # OAuth2 password bearer scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
