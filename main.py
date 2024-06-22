@@ -33,7 +33,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 # Add CORS middleware
-origins = ["http://localhost", "http://localhost:5173"]
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+    "http://192.168.18.8:5173/",
+]
 
 app.add_middleware(
     CORSMiddleware,
