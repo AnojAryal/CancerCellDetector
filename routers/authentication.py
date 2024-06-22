@@ -36,6 +36,7 @@ def login(
             "id": user.id,
             "is_admin": user.is_admin,
             "hospital_id": user.hospital_id,
+            "is_hospital_admin": user.is_hospital_admin,
         }
     )
     return {"access_token": access_token, "token_type": "bearer"}
