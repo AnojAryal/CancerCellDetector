@@ -56,6 +56,30 @@ class UserUpdate(BaseModel):
     hospital_id: Optional[int] = None
 
 
+# user profile
+class UserProfile(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str
+    address: str
+    blood_group: str
+    gender: str
+    contact_no: str
+
+    class Config:
+        form_attributes = True
+
+
+# user update model
+class ProfileUpdate(BaseModel):
+    username: Optional[str] = None
+    full_name: Optional[str] = None
+    address: Optional[str] = None
+    blood_group: Optional[str] = None
+    gender: Optional[str] = None
+    contact_no: Optional[str] = None
+
+
 # Model for password reset token
 class PasswordResetRequest(BaseModel):
     email: EmailStr

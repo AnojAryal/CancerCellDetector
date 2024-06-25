@@ -1,7 +1,5 @@
 from fastapi import (
-    Depends,
     UploadFile,
-    File,
     Path,
 )
 import uuid
