@@ -1,3 +1,4 @@
+import profile
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
@@ -10,6 +11,7 @@ from routers import (
     hospitals,
     patients,
     cell_tests,
+    profile,
 )
 import models as models
 import cleanup
@@ -43,7 +45,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -59,3 +61,4 @@ app.include_router(change_password.router)
 app.include_router(hospitals.router)
 app.include_router(patients.router)
 app.include_router(cell_tests.router)
+app.include_router(profile.router)

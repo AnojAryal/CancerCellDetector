@@ -101,7 +101,7 @@ class CellTest(Base):
     description = Column(Text, nullable=True)
     updated_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
-    detection_status = Column(String(1), nullable=False)
+    detection_status = Column(String(255), nullable=False)
     patient_id = Column(
         UUID(as_uuid=True), ForeignKey("lab_patient.id"), nullable=False
     )
