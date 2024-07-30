@@ -129,7 +129,17 @@ async def update_patient(
         )
 
     for field, value in patient.dict().items():
-        setattr(db_patient, field, value)
+        if isinstance(value, dict) and hasattr(db_patient, field):
+            # Handle nested dicts or related models
+            related_model = getattr(db_patient, field)
+            if related_model:
+                for key, val in value.items():
+                    setattr(related_model, key, val)
+            else:
+                # Handle creation if necessary
+                pass
+        else:
+            setattr(db_patient, field, value)
 
     db.commit()
     db.refresh(db_patient)
