@@ -114,30 +114,6 @@ class Hospital(HospitalBase):
         from_attributes = True
 
 
-# Base model for Patient
-class PatientBase(BaseModel):
-    first_name: str
-    last_name: str
-    email: EmailStr
-    phone: Optional[str]
-    birth_date: date
-    hospital_id: Optional[int]
-
-
-# Model for creating a patient
-class PatientCreate(PatientBase):
-    pass
-
-
-# Patient model
-class Patient(PatientBase):
-    id: UUID
-    hospital_id: Optional[int]
-
-    class Config:
-        from_attributes = True
-
-
 # Base model for Address
 class AddressBase(BaseModel):
     street: str
@@ -155,7 +131,31 @@ class Address(AddressBase):
     patient_id: UUID
 
     class Config:
-        from_attributes = True
+        form_attributes = True
+
+
+# Base model for Patient
+class PatientBase(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: Optional[str]
+    birth_date: date
+    hospital_id: Optional[int]
+    address: Optional[Address]
+
+
+# Model for creating a patient
+class PatientCreate(PatientBase):
+    pass
+
+
+# Patient model
+class Patient(PatientBase):
+    id: UUID
+
+    class Config:
+        form_attributes = True
 
 
 # Base model for Cell Test
