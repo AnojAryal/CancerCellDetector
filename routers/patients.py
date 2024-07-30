@@ -87,12 +87,20 @@ async def get_patients_form_hospital_by_id(
             status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied"
         )
 
-    patients = (
+    patient = (
         db.query(models.Patient)
+        .join(models.Address)
+        .filter(models.Patient.id == patient_id)
         .filter(models.Patient.hospital_id == hospital_id)
         .first()
     )
-    return patients
+
+    if not patient:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
+        )
+
+    return patient
 
 
 # Update a patient
@@ -206,13 +214,12 @@ async def create_address_for_patient(
 
 # Get addresses for a patient
 @router.get(
-    "/{hospital_id}/patients/{patient_id}/address/{address_id}",
+    "/{hospital_id}/patients/{patient_id}/address",
     response_model=List[schemas.Address],
 )
 async def get_addresses_for_patient(
     hospital_id: int,
     patient_id: str,
-    address_id: int,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
