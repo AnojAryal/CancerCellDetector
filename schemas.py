@@ -167,6 +167,16 @@ class CellTestBase(BaseModel):
     detection_status: str
 
 
+# Base model for Cell Test
+class CellTestFetch(BaseModel):
+    id: UUID
+    title: str
+    description: Optional[str]
+    updated_at: datetime
+    created_at: datetime
+    detection_status: str
+
+
 # Model for creating a cell test
 class CellTestCreate(CellTestBase):
     pass
@@ -190,7 +200,7 @@ class PatientWithAddressAndCellTests(BaseModel):
     birth_date: datetime
     hospital_id: Optional[int] = None
     address: Optional[AddressBase] = None
-    cell_tests: Optional[List[CellTestBase]] = []
+    cell_tests: Optional[List[CellTestFetch]] = []
 
     class Config:
         form_attributes = True
