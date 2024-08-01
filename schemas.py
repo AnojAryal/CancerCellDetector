@@ -141,6 +141,7 @@ class Patient(PatientBase):
 class AddressBase(BaseModel):
     street: str
     city: str
+    id: int
 
 
 # Model for creating an address
@@ -192,7 +193,7 @@ class PatientWithAddressAndCellTests(BaseModel):
     cell_tests: Optional[List[CellTestBase]] = []
 
     class Config:
-        orm_mode = True
+        form_attributes = True
 
 
 # Base model for Result
