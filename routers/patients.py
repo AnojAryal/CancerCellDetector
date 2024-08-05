@@ -75,8 +75,11 @@ async def get_patients_form_hospital(
 
 
 # Retrieve patients with patient id
-@router.get("/{hospital_id}/patients/{patient_id}", response_model=schemas.Patient)
-async def get_patients_form_hospital_by_id(
+@router.get(
+    "/{hospital_id}/patients/{patient_id}",
+    response_model=schemas.PatientWithAddressAndCellTests,
+)
+async def get_patient_by_id(
     patient_id: str,
     hospital_id: int,
     db: Session = Depends(get_db),
@@ -89,7 +92,8 @@ async def get_patients_form_hospital_by_id(
 
     patient = (
         db.query(models.Patient)
-        .join(models.Address)
+        .outerjoin(models.Address)
+        .outerjoin(models.CellTest)
         .filter(models.Patient.id == patient_id)
         .filter(models.Patient.hospital_id == hospital_id)
         .first()

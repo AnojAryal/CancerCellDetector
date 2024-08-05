@@ -114,10 +114,34 @@ class Hospital(HospitalBase):
         from_attributes = True
 
 
+# Base model for Patient
+class PatientBase(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: Optional[str]
+    birth_date: date
+    hospital_id: Optional[int]
+
+
+# Model for creating a patient
+class PatientCreate(PatientBase):
+    pass
+
+
+# Patient model
+class Patient(PatientBase):
+    id: UUID
+
+    class Config:
+        form_attributes = True
+
+
 # Base model for Address
 class AddressBase(BaseModel):
     street: str
     city: str
+    id: int
 
 
 # Model for creating an address
@@ -134,32 +158,18 @@ class Address(AddressBase):
         form_attributes = True
 
 
-# Base model for Patient
-class PatientBase(BaseModel):
-    first_name: str
-    last_name: str
-    email: EmailStr
-    phone: Optional[str]
-    birth_date: date
-    hospital_id: Optional[int]
-    address: Optional[Address]
-
-
-# Model for creating a patient
-class PatientCreate(PatientBase):
-    pass
-
-
-# Patient model
-class Patient(PatientBase):
-    id: UUID
-
-    class Config:
-        form_attributes = True
+# Base model for Cell Test
+class CellTestBase(BaseModel):
+    title: str
+    description: Optional[str]
+    updated_at: datetime
+    created_at: datetime
+    detection_status: str
 
 
 # Base model for Cell Test
-class CellTestBase(BaseModel):
+class CellTestFetch(BaseModel):
+    id: UUID
     title: str
     description: Optional[str]
     updated_at: datetime
@@ -179,6 +189,21 @@ class CellTest(CellTestBase):
 
     class Config:
         from_attributes = True
+
+
+class PatientWithAddressAndCellTests(BaseModel):
+    id: UUID
+    first_name: str
+    last_name: str
+    email: str
+    phone: Optional[str] = None
+    birth_date: datetime
+    hospital_id: Optional[int] = None
+    address: Optional[AddressBase] = None
+    cell_tests: Optional[List[CellTestFetch]] = []
+
+    class Config:
+        form_attributes = True
 
 
 # Base model for Result
