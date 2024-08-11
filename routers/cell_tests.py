@@ -341,13 +341,8 @@ async def get_cell_test_images(
     current_user: models.User = Depends(get_current_user),
 ):
     try:
-
+        # Check if the user is an admin or belongs to the same hospital
         if not current_user.is_admin and current_user.hospital_id != hospital_id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied"
-            )
-
-        if not current_user.is_admin and current_user.patient_id != patient_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied"
             )
@@ -373,6 +368,7 @@ async def get_cell_test_images(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
             )
 
+        # Fetch cell test images associated with the specific cell test ID
         cell_test_images = (
             db.query(models.CellTestImageData)
             .filter(models.CellTestImageData.cell_test_id == cell_test_id)
