@@ -12,44 +12,48 @@ This project is a backend API for a Cancer Cell Detector application, built usin
 - Provides endpoints for image processing and prediction results.
 - Automatic interactive API documentation.
 
-
 ## Installation
 
 1. **Clone the repository:**
 
-    * git clone git@github.com:AnojAryal/CancerCellDetector.git *or*
-    * git clone https://github.com/AnojAryal/CancerCellDetector.git 
-    
+    ```bash
+    git clone git@github.com:AnojAryal/CancerCellDetector.git
+    # or
+    git clone https://github.com/AnojAryal/CancerCellDetector.git
+    ```
 
 2. **Create the virtual environment:**
 
-    * python3 -m venv venv
-    * source venv/bin/activate
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
 
+3. **Install the dependencies:**
 
-3. **Install the Dependencies**
-
+    ```bash
     pip install -r requirements.txt
+    ```
 
+4. **Run the application:**
 
-4. **Test the application**
-
+    ```bash
     uvicorn app.main:app --reload
+    ```
 
+5. **Testing endpoints:**
 
-5. **Testing endpoints**
-
-    *   /docs - test with swagger
-    *  /redoc - test with redoc
+    - Open your browser and go to `/docs` to test with Swagger UI.
+    - Open your browser and go to `/redoc` to test with ReDoc.
 
 ## Contributing
 
 If you'd like to contribute, please fork the repository and use a feature branch. Pull requests are warmly welcome.
 
-
 ## License
-This project is licensed under the terms of the *MIT license*.
 
+This project is licensed under the terms of the **MIT license**.
 
 ## Contact
-For any questions or suggestions, feel free to reach out to *anoj1810@gmail.com*.
+
+For any questions or suggestions, feel free to reach out to **anoj1810@gmail.com**.
