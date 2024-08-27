@@ -32,6 +32,7 @@ app = FastAPI()
 models.Base.metadata.create_all(engine)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 
 # Add CORS middleware
