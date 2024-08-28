@@ -206,26 +206,6 @@ class PatientWithAddressAndCellTests(BaseModel):
         form_attributes = True
 
 
-# Base model for Result
-class ResultBase(BaseModel):
-    description: Optional[str]
-    created_at: date
-    celltest_id: UUID
-
-
-# Model for creating a result
-class ResultCreate(ResultBase):
-    pass
-
-
-# Result model
-class Result(ResultBase):
-    id: UUID
-
-    class Config:
-        from_attributes = True
-
-
 # Base model for Cell Test Image Data
 class CellTestImageData(BaseModel):
     image: str
@@ -262,6 +242,37 @@ class ResultImageData(ResultImageData):
 
     class Config:
         from_attributes = True
+
+
+# Base model for Result
+class ResultBase(BaseModel):
+    description: Optional[str]
+    created_at: date
+    celltest_id: UUID
+    result_images: Optional[List[ResultImageData]] = []
+
+
+# Model for creating a result
+class ResultCreate(ResultBase):
+    pass
+
+
+# Result model
+class Result(ResultBase):
+    id: UUID
+
+    class Config:
+        from_attributes = True
+
+
+class CellTestFetch(BaseModel):
+    id: UUID
+    title: str
+    description: Optional[str]
+    updated_at: datetime
+    created_at: datetime
+    detection_status: str
+    results: Optional[List[Result]] = []
 
 
 # Changing the password

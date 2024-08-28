@@ -13,6 +13,7 @@ from JWTtoken import get_current_user
 from pathlib import Path
 from typing import List
 from save_image import save_image
+from sqlalchemy.orm import joinedload
 
 router = APIRouter(prefix="/hospital", tags=["Cell-test"])
 get_db = database.get_db
@@ -70,10 +71,10 @@ async def create_cell_test_for_patient(
     return db_cell_test
 
 
-# get cell_tests
+##retrive cell tests
 @router.get(
     "/{hospital_id}/patients/{patient_id}/cell_tests",
-    response_model=List[schemas.CellTest],
+    response_model=List[schemas.CellTestFetch],
 )
 async def get_cell_tests_for_patient(
     hospital_id: int,
@@ -109,11 +110,17 @@ async def get_cell_tests_for_patient(
 
         cell_tests = (
             db.query(models.CellTest)
+            .options(
+                joinedload(models.CellTest.results).joinedload(
+                    models.Result.result_images
+                )
+            )
             .filter(models.CellTest.patient_id == patient_id)
             .all()
         )
 
         return cell_tests
+
     except HTTPException as http_exception:
         raise http_exception
     except Exception as e:
