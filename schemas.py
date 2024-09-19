@@ -141,7 +141,6 @@ class Patient(PatientBase):
 class AddressBase(BaseModel):
     street: str
     city: str
-    id: int
 
 
 # Model for creating an address
