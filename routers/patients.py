@@ -268,7 +268,7 @@ async def update_address_for_patient(
     hospital_id: int,
     patient_id: str,
     address_id: int,
-    address: schemas.AddressCreate,
+    address: schemas.AddressUpdate,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):

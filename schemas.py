@@ -148,6 +148,12 @@ class AddressCreate(AddressBase):
     patient_id: UUID
 
 
+# Model for updating an address
+class AddressUpdate(AddressBase):
+    street: str = None
+    city: str = None
+
+
 # Address model
 class Address(AddressBase):
     id: int
