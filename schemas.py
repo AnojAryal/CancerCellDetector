@@ -144,6 +144,13 @@ class AddressBase(BaseModel):
 
 
 # Model for creating an address
+class AddressGet(AddressBase):
+    id: int
+    street: str
+    city: str
+
+
+# Model for creating an address
 class AddressCreate(AddressBase):
     patient_id: UUID
 
@@ -204,7 +211,7 @@ class PatientWithAddressAndCellTests(BaseModel):
     phone: Optional[str] = None
     birth_date: datetime
     hospital_id: Optional[int] = None
-    address: Optional[AddressBase] = None
+    address: Optional[AddressGet] = None
     cell_tests: Optional[List[CellTestFetch]] = []
 
     class Config:
