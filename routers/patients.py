@@ -229,7 +229,7 @@ async def create_address_for_patient(
 # Get addresses for a patient
 @router.get(
     "/{hospital_id}/patients/{patient_id}/address",
-    response_model=List[schemas.Address],
+    response_model=List[schemas.AddressGet],
 )
 async def get_addresses_for_patient(
     hospital_id: int,
