@@ -141,12 +141,24 @@ class Patient(PatientBase):
 class AddressBase(BaseModel):
     street: str
     city: str
+
+
+# Model for creating an address
+class AddressGet(AddressBase):
     id: int
+    street: str
+    city: str
 
 
 # Model for creating an address
 class AddressCreate(AddressBase):
     patient_id: UUID
+
+
+# Model for updating an address
+class AddressUpdate(AddressBase):
+    street: str = None
+    city: str = None
 
 
 # Address model
@@ -199,31 +211,11 @@ class PatientWithAddressAndCellTests(BaseModel):
     phone: Optional[str] = None
     birth_date: datetime
     hospital_id: Optional[int] = None
-    address: Optional[AddressBase] = None
+    address: Optional[AddressGet] = None
     cell_tests: Optional[List[CellTestFetch]] = []
 
     class Config:
         form_attributes = True
-
-
-# Base model for Result
-class ResultBase(BaseModel):
-    description: Optional[str]
-    created_at: date
-    celltest_id: UUID
-
-
-# Model for creating a result
-class ResultCreate(ResultBase):
-    pass
-
-
-# Result model
-class Result(ResultBase):
-    id: UUID
-
-    class Config:
-        from_attributes = True
 
 
 # Base model for Cell Test Image Data
@@ -262,6 +254,37 @@ class ResultImageData(ResultImageData):
 
     class Config:
         from_attributes = True
+
+
+# Base model for Result
+class ResultBase(BaseModel):
+    description: Optional[str]
+    created_at: date
+    celltest_id: UUID
+    result_images: Optional[List[ResultImageData]] = []
+
+
+# Model for creating a result
+class ResultCreate(ResultBase):
+    pass
+
+
+# Result model
+class Result(ResultBase):
+    id: UUID
+
+    class Config:
+        from_attributes = True
+
+
+class CellTestFetch(BaseModel):
+    id: UUID
+    title: str
+    description: Optional[str]
+    updated_at: datetime
+    created_at: datetime
+    detection_status: str
+    results: Optional[List[Result]] = []
 
 
 # Changing the password

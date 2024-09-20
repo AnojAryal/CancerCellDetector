@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 from database import engine
 from routers import (
+    atomic_transaction,
     user,
     authentication,
     password_reset,
@@ -62,4 +63,5 @@ app.include_router(change_password.router)
 app.include_router(hospitals.router)
 app.include_router(patients.router)
 app.include_router(cell_tests.router)
+app.include_router(atomic_transaction.router)
 app.include_router(profile.router)
