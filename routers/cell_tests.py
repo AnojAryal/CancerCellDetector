@@ -278,20 +278,21 @@ async def delete_cell_test_for_patient(
         )
 
 
-# post image data for celltest
+##post images for celltest
 @router.post(
     "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/data_images",
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.CellTestImageDataCreate,
+    response_model=list[schemas.CellTestImageDataCreate],
 )
-async def upload_image(
+async def upload_images(
     hospital_id: int,
     patient_id: str,
     cell_test_id: str,
-    file: UploadFile = File(...),
+    files: list[UploadFile] = File(...),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    saved_images = []
     try:
         hospital = (
             db.query(models.Hospital).filter(models.Hospital.id == hospital_id).first()
@@ -326,24 +327,26 @@ async def upload_image(
             )
 
         upload_dir = Path("media/images/test_images")
+        upload_dir.mkdir(parents=True, exist_ok=True)
 
-        saved_image_path = save_image(file, upload_dir)
+        for file in files:  # Loop through each file
+            saved_image_path = save_image(file, upload_dir)
+            db_image = models.CellTestImageData(
+                image=str(saved_image_path),
+                cell_test_id=cell_test_id,
+            )
+            db.add(db_image)
+            saved_images.append(db_image)
 
-        db_image = models.CellTestImageData(
-            image=str(saved_image_path),
-            cell_test_id=cell_test_id,
-        )
-        db.add(db_image)
         db.commit()
-        db.refresh(db_image)
 
-        return db_image
+        return saved_images
     except HTTPException as http_exception:
         raise http_exception
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to upload image: {e}",
+            detail=f"Failed to upload images: {e}",
         )
 
 
