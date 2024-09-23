@@ -9,8 +9,6 @@ from sqlalchemy.orm import Session
 import os
 from dotenv import load_dotenv
 
-import routers
-
 
 load_dotenv()
 
