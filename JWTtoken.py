@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from fastapi import Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import database
@@ -16,6 +16,8 @@ SECRET_KEY = os.getenv("JWTtoken")
 # Algorithm used for JWT token encoding and decoding
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
+REFRESH_TOKEN_EXPIRE_DAYS = 30
+REFRESH_SECRET_KEY = os.getenv("REFRESH_KEY")
 
 # OAuth2 password bearer scheme for token authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -28,6 +30,14 @@ def create_access_token(data: dict):
 
     # Encode the data into a JWT token using the secret key and algorithm
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+def create_refresh_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, REFRESH_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 

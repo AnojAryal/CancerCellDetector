@@ -283,20 +283,25 @@ async def delete_cell_test_for_patient(
         )
 
 
-# post image data for celltest
+##post images for celltest
 @router.post(
     "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/data_images",
     status_code=status.HTTP_201_CREATED,
+
     response_model=List[schemas.CellTestImageDataCreate],
+
 )
 async def upload_images(
     hospital_id: int,
     patient_id: str,
     cell_test_id: str,
+
     files: List[UploadFile] = File(...),  # Accept a list of files
+
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
+    saved_images = []
     try:
         # Validate hospital existence
         hospital = (
@@ -337,6 +342,7 @@ async def upload_images(
 
         # Directory for saving images
         upload_dir = Path("media/images/test_images")
+
         upload_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
         # List to hold created database objects
@@ -359,6 +365,7 @@ async def upload_images(
             saved_images.append(db_image)
 
         return saved_images  # Return all saved images
+
 
     except HTTPException as http_exception:
         raise http_exception
