@@ -1,0 +1,17 @@
+# DATABASE_URL=postgresql://incri:fastrack@localhost/cancercelldetection_db
+
+
+# # SMTP server details
+# server_name = "smtp.gmail.com"
+# server_port = 587  # For TLS
+# server_email = "teamcancercelldetector@gmail.com"
+# server_password = "rgck vvtb uefq ensk"
+
+
+# JWTtoken = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+
+# REFRESH_KEY = "08httgh6ytfaa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63ther556hey8"
+
+# UserSecretKey = "f04b3e8a9d2c6e1b8a6c4e9b7d3f9a1c2e3b4d6f8a0c2e5b9d0a7f3b5d8f9a0c"
+
+# PasswordResetToken = "9d18e094faa6ca2646c818166b7a18103b956f7099f6f0f4caa6cf63b88e57b9"

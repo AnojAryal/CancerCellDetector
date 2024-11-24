@@ -65,3 +65,6 @@ app.include_router(patients.router)
 app.include_router(cell_tests.router)
 app.include_router(atomic_transaction.router)
 app.include_router(profile.router)
+
+#run microservices
+app.include_router(atomic_transaction.router)
