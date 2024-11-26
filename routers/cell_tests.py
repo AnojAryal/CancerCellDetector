@@ -11,9 +11,10 @@ from sqlalchemy.orm import Session
 import database, schemas, models
 from JWTtoken import get_current_user
 from pathlib import Path
-from typing import List
+from typing import List, Union
 from save_image import save_image
 from sqlalchemy.orm import joinedload
+from datetime import datetime
 
 router = APIRouter(prefix="/hospital", tags=["Cell-test"])
 get_db = database.get_db
@@ -124,17 +125,21 @@ async def get_cell_tests_for_patient(
             .all()
         )
 
-        # Update cell_tests to include correct image URLs using image id
+        # Update `datetime` fields to `date` and add URLs safely
         for cell_test in cell_tests:
-            for result in cell_test.results:
-                for result_image in result.result_images:
-                    # Construct the URL using image id
-                    result_image.image_url = f"{BASE_URL}/{result_image.id}"
+            cell_test.created_at = cell_test.created_at.date()
+            cell_test.updated_at = cell_test.updated_at.date()
+
+            if cell_test.results:  # Check if results exist
+                for result in cell_test.results:
+                    result.created_at = result.created_at.date()
+
+                    if result.result_images:  # Check if result_images exist
+                        for result_image in result.result_images:
+                            result_image.image_url = f"{BASE_URL}/{result_image.id}"
 
         return cell_tests
 
-    except HTTPException as http_exception:
-        raise http_exception
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -278,22 +283,22 @@ async def delete_cell_test_for_patient(
         )
 
 
-##post images for celltest
+# post image data for celltest
 @router.post(
     "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/data_images",
     status_code=status.HTTP_201_CREATED,
-    response_model=list[schemas.CellTestImageDataCreate],
+    response_model=List[schemas.CellTestImageDataCreate],
 )
 async def upload_images(
     hospital_id: int,
     patient_id: str,
     cell_test_id: str,
-    files: list[UploadFile] = File(...),
+    files: List[UploadFile] = File(...),  # Accept a list of files
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    saved_images = []
     try:
+        # Validate hospital existence
         hospital = (
             db.query(models.Hospital).filter(models.Hospital.id == hospital_id).first()
         )
@@ -301,6 +306,8 @@ async def upload_images(
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Hospital not found"
             )
+
+        # Validate patient existence
         patient = (
             db.query(models.Patient)
             .filter(
@@ -313,6 +320,8 @@ async def upload_images(
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
             )
+
+        # Validate cell test existence
         cell_test = (
             db.query(models.CellTest)
             .filter(
@@ -326,21 +335,31 @@ async def upload_images(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Cell test not found"
             )
 
+        # Directory for saving images
         upload_dir = Path("media/images/test_images")
-        upload_dir.mkdir(parents=True, exist_ok=True)
+        upload_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
-        for file in files:  # Loop through each file
+        # List to hold created database objects
+        saved_images = []
+
+        # Process each file
+        for file in files:
+            # Save image
             saved_image_path = save_image(file, upload_dir)
+
+            # Create database entry for the image
             db_image = models.CellTestImageData(
                 image=str(saved_image_path),
                 cell_test_id=cell_test_id,
             )
             db.add(db_image)
+            db.commit()
+            db.refresh(db_image)
+
             saved_images.append(db_image)
 
-        db.commit()
+        return saved_images  # Return all saved images
 
-        return saved_images
     except HTTPException as http_exception:
         raise http_exception
     except Exception as e:
@@ -349,6 +368,7 @@ async def upload_images(
             detail=f"Failed to upload images: {e}",
         )
 
+    
 
 # Base URL for accessing media files
 BASE_URL = "http://127.0.0.1:8000/media/test_images"
@@ -405,6 +425,91 @@ async def get_cell_test_images(
         image.url = f"{BASE_URL}/{image.id}"
 
     return cell_test_images
+
+#delete specific image
+@router.delete(
+    "/{hospital_id}/patients/{patient_id}/cell_tests/{cell_test_id}/data_images/{image_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_image(
+    hospital_id: int,
+    patient_id: str,
+    cell_test_id: str,
+    image_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    try:
+        # Ensure the user has the necessary permissions
+        if not current_user.is_admin and current_user.hospital_id != hospital_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied"
+            )
+
+        # Validate patient existence within the specified hospital
+        db_patient = (
+            db.query(models.Patient)
+            .filter(
+                models.Patient.id == patient_id,
+                models.Patient.hospital_id == hospital_id,
+            )
+            .first()
+        )
+
+        if not db_patient:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Patient not found"
+            )
+
+        # Validate cell test existence
+        db_cell_test = (
+            db.query(models.CellTest)
+            .filter(
+                models.CellTest.id == cell_test_id,
+                models.CellTest.patient_id == patient_id,
+            )
+            .first()
+        )
+
+        if not db_cell_test:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Cell test not found"
+            )
+
+        # Fetch the image to be deleted
+        db_image = (
+            db.query(models.CellTestImageData)
+            .filter(
+                models.CellTestImageData.id == image_id,
+                models.CellTestImageData.cell_test_id == cell_test_id,
+            )
+            .first()
+        )
+
+        if not db_image:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Image not found"
+            )
+
+        # Delete the image file from the filesystem
+        image_path = Path(db_image.image)
+        if image_path.exists():
+            image_path.unlink()  # Remove the image file from the filesystem
+
+        # Remove the image record from the database
+        db.delete(db_image)
+        db.commit()
+
+        return None  # HTTP 204 No Content
+
+    except HTTPException as http_exception:
+        raise http_exception
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to delete image: {e}",
+        )
+
 
 
 # Create a result for a cell test
