@@ -125,7 +125,6 @@ async def get_cell_tests_for_patient(
             .all()
         )
 
-        # Update `datetime` fields to `date` and add URLs safely
         for cell_test in cell_tests:
             cell_test.created_at = cell_test.created_at.date()
             cell_test.updated_at = cell_test.updated_at.date()
